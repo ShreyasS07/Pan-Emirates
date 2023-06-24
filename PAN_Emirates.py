@@ -12,38 +12,23 @@ from tkinter.messagebox import askyesno
 from openpyxl.styles import Font, Border, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.worksheet.table import Table, TableStyleInfo
-
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=FutureWarning)
+
+
 def input_file():
     global excel_path
-    # excel_path = filedialog.askopenfilename(filetypes=[('Excel Files', '*.xlsx;*.xls;*.csv')])   # Select Excel File
-
-    # excel_path =  "C:\\Users\\ASUS\\Downloads\\Invoice\\label files\\PO,PI,CI - INVOICE_NUMBER - PO 02.csv"
-    # excel_path =  "C:\\Users\\ASUS\\Downloads\\Invoice\\label files\\BL,PL,CO - PO_NUMBER - IP0024727.csv"
-    # excel_path =  "C:\\Users\\ASUS\\Downloads\\Invoice\\NEW FILES\\label\\BL,CO,PL - PO_NUMBER - IP0024929.csv"
-    excel_path =  "C:\\Users\\ASUS\\Downloads\\Invoice\\NEW FILES\\label\\PO vs PI vs CI - INVOICE_NUMBER - 44.csv"
-
+    excel_path = filedialog.askopenfilename(filetypes=[('Excel Files', '*.xlsx;*.xls;*.csv')])   # Select Excel File
     print("\nSelected Label File path:", excel_path)
-
-
 
 def select_folder():
     global folder_path
-    # folder_path = filedialog.askdirectory()
-    # folder_path = "C:\\Users\\ASUS\\Downloads\\Invoice\\Table files"
-    folder_path = "C:\\Users\\ASUS\\Downloads\\Invoice\\NEW FILES\\tabel"
+    folder_path = filedialog.askdirectory()
     print("Selected table files path:", folder_path)
-
-
 
 def output_folder():
     global output_folder
-    # output_folder = filedialog.askdirectory()
-    # output_folder = "C:\\Users\\ASUS\\Downloads\\Invoice\\Output_2"
-    output_folder = "C:\\Users\\ASUS\\Downloads\\Invoice\\NEW FILES\\output invoice"
     print("Selected output folder path is:", output_folder)
-
 
 def fixAmount(row=''):
     new_row = str(row).replace(',', '').replace('$', '').replace('USD', '').replace('US', '')
@@ -52,8 +37,6 @@ def fixAmount(row=''):
     except:
         new_row = float("0")
     return new_row
-
-
 
 def process():
     print("\nProcess started")
@@ -117,47 +100,6 @@ def process():
     # Sheet name
     ws.title = "Label data"
     wb.save(output_file_path)
-
-
-    # --------------------
-
-    # # Create a new workbook
-    # wb = Workbook()
-    # ws = wb.active
-    # # Write the DataFrame to the worksheet
-    # for row in dataframe_to_rows(final_df, index=False, header=True):
-    #     ws.append(row)
-    # # Add gridlines to the table
-    # table_range = f"A1:{chr(ord('A') + len(final_df.columns) - 1)}{len(final_df) + 1}"
-    # table = ws[table_range]
-    #
-    # # Apply bold formatting to the header
-    # header_font = Font(bold=True)
-    # for cell in ws[1]:
-    #     cell.font = header_font
-    #     cell.alignment = Alignment(horizontal="center")
-    # # Set alignment to left for the rest of the values
-    # for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
-    #     for cell in row:
-    #         cell.alignment = Alignment(horizontal="left")
-    #
-    # # Set border style for each cell in the table
-    # border_style = Border(
-    #     left=Side(border_style="thin", color="000000"),
-    #     right=Side(border_style="thin", color="000000"),
-    #     top=Side(border_style="thin", color="000000"),
-    #     bottom=Side(border_style="thin", color="000000")
-    # )
-    # for row in table:
-    #     for cell in row:
-    #         cell.border = border_style
-    #         # cell.alignment = Alignment(horizontal="left")
-
-
-    # Sheet name
-    ws.title = "Label data"
-    wb.save(output_file_path)
-
     details_col_index = 1
 
     for row in range(2, ws.max_row + 1):
@@ -270,17 +212,6 @@ def process():
                      'Quantity', 'Unit Price', 'Total Price']
     final_df = final_df[new_col_order]
 
-
-    # # Adding Color to col values..
-    # styled_df = final_df.style
-    # styled_df = styled_df.apply(lambda x: ['color: red' if col == 'Quantity' else '' for col in styled_df.columns],
-    #                             axis=1)
-    # styled_df = styled_df.apply(lambda x: ['color: red' if col == 'Unit Price' else '' for col in styled_df.columns],
-    #                             axis=1)
-    # styled_df = styled_df.apply(lambda x: ['color: red' if col == 'Total Price' else '' for col in styled_df.columns],
-    #                             axis=1)
-
-
     # Styled dataframe to Excel
     temp_file_path = os.path.join(output_folder, "temp.xlsx")
     # print("styled_df col", styled_df.columns)
@@ -298,10 +229,6 @@ def process():
     for row in temp_ws.iter_rows():
         for cell in row:
             new_ws[cell.coordinate].value = cell.value
-
-    # wb.save(output_file_path)
-    # os.remove(temp_file_path)
-
     # number of rows & col
     num_rows = final_df.shape[0]
     num_cols = final_df.shape[1]
@@ -312,13 +239,6 @@ def process():
         for row in worksheet[range_str]:
             for cell in row:
                 cell.border = border
-
-    # # Apply grid lines to the entire dataframe range
-    # start_cell = new_ws.cell(row=1, column=1)
-    # end_cell = new_ws.cell(row=num_rows + 1, column=num_cols)
-    # data_range = f"{start_cell.coordinate}:{end_cell.coordinate}"
-    # apply_border_to_range(new_ws, data_range)
-
     # Apply grid lines to the entire dataframe range, including the last row
     start_cell = new_ws.cell(row=1, column=1)
     end_cell = new_ws.cell(row=num_rows + 2, column=num_cols)
@@ -419,10 +339,6 @@ root.wm_iconbitmap(f"{current_path}/icons/mindful_logo.ico")
 
 label = tk.Label(root, text="PAN EMIRATES", width=50, height=3, fg="#03001C", font=('Arial', 10, 'bold'))
 label.grid(column=1, row=1)
-
-# selected_file = tk.StringVar()
-# company_dropdown = ttk.Combobox(root, values=file_type, width=32)
-# company_dropdown.grid(column=1, row=2)
 
 input = tk.Button(root, text="Select label Excel File", command=input_file, height=1, width=32)
 input.grid(column=1, row=2, pady=10)
